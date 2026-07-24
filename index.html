@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Growth Insight | Dashboard de Performance com IA</title>
+<meta name="description" content="Dashboard de marketing que transforma CSV de campanhas em KPIs visuais e um resumo executivo gerado por IA (Gemini).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand">Growth<span>Insight</span></div>
+    <div class="brand-sub mono">dashboard de performance + IA</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- STEP 1: DATA INPUT -->
+  <section class="panel" id="dataPanel">
+    <div class="panel-head">
+      <span class="step mono">01</span>
+      <div>
+        <h2>Carregue os dados de campanha</h2>
+        <p class="muted">Suba um CSV com as colunas: <code>date, campaign, market, spend, clicks, impressions, conversions, revenue</code></p>
+      </div>
+    </div>
+    <div class="upload-row">
+      <label class="file-drop" id="fileDrop">
+        <input type="file" id="csvInput" accept=".csv" hidden>
+        <span id="fileLabel">Clique ou arraste um arquivo .csv aqui</span>
+      </label>
+      <button class="btn btn-ghost" id="loadSample">Usar dados de exemplo</button>
+    </div>
+    <p class="hint mono" id="statusMsg">Aguardando dados…</p>
+  </section>
+
+  <!-- STEP 2: KPI CARDS -->
+  <section class="panel" id="kpiPanel" hidden>
+    <div class="panel-head">
+      <span class="step mono">02</span>
+      <div>
+        <h2>Indicadores consolidados</h2>
+        <p class="muted">Totais e médias calculados a partir do arquivo carregado.</p>
+      </div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Investimento total</span>
+        <span class="kpi-value mono" id="kpiSpend">—</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Receita total</span>
+        <span class="kpi-value mono" id="kpiRevenue">—</span>
+      </div>
+      <div class="kpi-card accent">
+        <span class="kpi-label">ROAS médio</span>
+        <span class="kpi-value mono" id="kpiRoas">—</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">CPA médio</span>
+        <span class="kpi-value mono" id="kpiCpa">—</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">ROI</span>
+        <span class="kpi-value mono" id="kpiRoi">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3: CHARTS -->
+  <section class="panel" id="chartPanel" hidden>
+    <div class="panel-head">
+      <span class="step mono">03</span>
+      <div>
+        <h2>Visualização</h2>
+        <p class="muted">Investimento vs. receita ao longo do tempo, e ROAS por campanha.</p>
+      </div>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Investimento &amp; Receita</h3>
+        <canvas id="lineChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>ROAS por campanha</h3>
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 4: AI INSIGHT -->
+  <section class="panel" id="aiPanel" hidden>
+    <div class="panel-head">
+      <span class="step mono">04</span>
+      <div>
+        <h2>Resumo executivo gerado por IA</h2>
+        <p class="muted">Usa a API do Gemini para transformar os números acima em uma leitura estratégica, pronta para reportar à liderança.</p>
+      </div>
+    </div>
+
+    <div class="ai-config">
+      <details id="apiDetails">
+        <summary class="mono">Configurar API do Gemini (opcional — sem chave, funciona em modo demo)</summary>
+        <div class="ai-config-fields">
+          <label class="field">
+            <span>Sua Gemini API Key</span>
+            <input type="password" id="apiKey" placeholder="cole sua API key aqui (fica só no seu navegador)">
+          </label>
+          <label class="field">
+            <span>Modelo</span>
+            <input type="text" id="modelName" value="gemini-2.0-flash">
+          </label>
+          <p class="hint">A chave é salva apenas no <code>localStorage</code> do seu navegador — nunca é enviada a nenhum servidor além da API do Google. Gere a sua em <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com</a>.</p>
+        </div>
+      </details>
+    </div>
+
+    <button class="btn btn-primary" id="generateInsight">Gerar resumo executivo</button>
+
+    <div class="terminal" id="insightOutput">
+      <p class="terminal-line muted">// o resumo gerado pela IA aparece aqui</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Growth Insight — projeto de portfólio por <strong>Juca Dolci</strong>, Growth Strategist &amp; AI Builder.</p>
+    <p class="mono muted"><a href="https://jucadolci.netlify.app/" target="_blank" rel="noopener">jucadolci.netlify.app</a></p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
